@@ -1,0 +1,1 @@
+export const isElectronApp = process.versions.hasOwnProperty('electron')

@@ -1,0 +1,30 @@
+{
+    "manifest_version": 2,
+    "name": "Hamster Kombat Get Token Bot V0.0.1",
+    "version": "0.0.1",
+    "description": "Hamster Kombat Get Token Bot V0.0.1",
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "permissions": [
+      "*://*.hamsterkombat.io/*",
+      "*://*.cex.io/*"
+    ],
+    "browser_action": {
+      "default_icon": {
+        "16": "logo.png",
+        "48": "logo.png",
+        "128": "logo.png"
+      }
+    },
+    "icons": {
+      "16": "logo.png",
+      "48": "logo.png",
+      "128": "logo.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["*://hamsterkombatgame.io/*","*://*.hamsterkombat.io/*", "*://*.tapswap.ai/*", "*://*.tapswap.club/*", "*://*.memefi.club/*", "*://*.spinner.timboo.pro/*"],
+        "js": ["content.js"],
+        "all_frames": true
+      }
+    ]
+  }

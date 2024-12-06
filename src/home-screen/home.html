@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <title>Wave Tool</title>
+   <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+   <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.min.css" />
+   <link rel="stylesheet" href="./home.css">
+</head>
+
+<body style="user-select: none" ondragstart="return false;" ondrop="return false;">
+
+   <div class="card header">
+      <div id="top-bar" class="search-bar">
+         <div class="search-input-line">
+            <div id="statistic">
+            </div>
+            <div class="form-inline">
+               <button name="load-config-btn" class="btn btn-primary" style="margin-left: 10px;">Chọn thư mục chứa file config</button>
+            </div>
+            <div class="form-inline">
+               <button name="filter-fraud-proxy-btn" class="btn btn-danger" style="margin-left: 10px;">Lọc fraud proxy</button>
+            </div>
+            <div class="form-inline">
+               <button name="export-yescoin-token-btn" class="btn btn-primary" style="margin-left: 10px;">Xuất token yescoin</button>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="card">
+      <div id="main-console">
+
+      </div>
+   </div>
+   <script src="./home.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+{
+    "manifest_version": 3,
+    "name": "Miniapp Bypass",
+    "version": "1.0",
+    "description": "Một extension giúp bypass mọi mini app của telegram, Cộng đồng: https://t.me/x100kvn",
+    "icons": {
+        "16": "images/16.png",
+        "32": "images/32.png",
+        "48": "images/48.png",
+        "128": "images/128.png"
+    },
+    "content_scripts": [
+        {
+          "js": ["scripts/telegram.js"],
+          "matches": [
+            "https://web.telegram.org/*"
+          ]
+        },
+        {
+          "js": ["scripts/copy-seedphase.js"],
+          "matches": [
+            "https://walletbot.me/*"
+          ],
+          "all_frames": true
+        }
+    ],
+    "action": {
+        "default_title": "Xem thông tin",
+        "default_popup": "popup.html"  
+    },
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "webNavigation",
+        "declarativeNetRequest",
+        "declarativeNetRequestFeedback",
+        "downloads"
+    ],
+    "declarative_net_request": {
+        "rule_resources": [
+          {
+            "id": "ruleset_1",
+            "enabled": true,
+            "path": "rules.json"
+          }
+        ]
+    },
+    "host_permissions": [
+        "http://*/*", "https://*/*"
+    ]
+  }

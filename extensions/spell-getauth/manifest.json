@@ -1,0 +1,36 @@
+{
+    "manifest_version": 3,
+    "name": "Spell Get Token Bot V0.0.1",
+    "version": "0.0.1",
+    "description": "Spell Get Token Bot V0.0.1",
+    "content_security_policy": {
+      "extension_pages": "script-src 'self'; object-src 'self'"
+    },
+    "host_permissions": ["*://tgames.bcsocial.net/"],
+    "permissions": [
+      "cookies",
+      "storage"
+    ],
+    "browser_action": {
+      "default_icon": {
+        "16": "logo.jpg",
+        "48": "logo.jpg",
+        "128": "logo.jpg"
+      }
+    },
+    "icons": {
+      "16": "logo.jpg",
+      "48": "logo.jpg",
+      "128": "logo.jpg"
+    },
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "content_scripts": [
+      {
+        "matches": ["*://wallet.spell.club/*"],
+        "js": ["content.js"],
+        "all_frames": true
+      }
+    ]
+  }

@@ -1,0 +1,24 @@
+diff --git a/node_modules/@sei-js/cosmjs/package.json b/node_modules/@sei-js/cosmjs/package.json
+index c39f7b0..3a41987 100644
+--- a/node_modules/@sei-js/cosmjs/package.json
++++ b/node_modules/@sei-js/cosmjs/package.json
+@@ -6,6 +6,7 @@
+   "module": "./dist/esm/index.js",
+   "types": "./dist/types/index.d.ts",
+   "sideEffects": false,
++  "type": "module",
+   "scripts": {
+     "prebuild": "rimraf dist",
+     "build": "yarn build:types && yarn build:cjs && yarn build:esm && yarn build:prettier",
+@@ -64,6 +65,11 @@
+       "import": "./dist/esm/index.js",
+       "require": "./dist/cjs/index.js",
+       "types": "./dist/types/index.d.ts"
++    },
++    "./dist/esm/wallet/wallet.js": {
++      "import": "./dist/esm/wallet/wallet.js",
++      "require": "./dist/cjs/wallet/wallet.js",
++      "types": "./dist/types/wallet/wallet.d.ts"
+     }
+   }
+ }

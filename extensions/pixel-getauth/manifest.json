@@ -1,0 +1,31 @@
+{
+    "manifest_version": 2,
+    "name": "Pixel Get Token v1.0.0",
+    "version": "0.0.1",
+    "description": "Pixel Get Token v1.0.0",
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "permissions": [
+      "*://*.hamsterkombat.io/*",
+      "*://*.cex.io/*",
+      "*://*.pxlvrs.io/*"
+    ],
+    "browser_action": {
+      "default_icon": {
+        "16": "logo.png",
+        "48": "logo.png",
+        "128": "logo.png"
+      }
+    },
+    "icons": {
+      "16": "logo.png",
+      "48": "logo.png",
+      "128": "logo.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["*://*.pxlvrs.io/*"],
+        "js": ["content.js"],
+        "all_frames": true
+      }
+    ]
+  }

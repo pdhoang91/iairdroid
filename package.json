@@ -1,0 +1,126 @@
+{
+  "name": "wave-scripts",
+  "version": "2.7.0",
+  "description": "",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "electron": "electron .",
+    "test": "jest",
+    "start": "electron main.js",
+    "pack": "electron-builder --dir",
+    "dist": "GENERATE_SOURCEMAP=false electron-builder",
+    "dist-win": "GENERATE_SOURCEMAP=false electron-builder --win --x64",
+    "postinstall": "patch-package"
+  },
+  "build": {
+    "appId": "com.namle.wave_scripts",
+    "files": [
+      "!assets/*",
+      "!extensions/**/*",
+      "!cloudscraper/**/*",
+      "!patches/*",
+      "!scripts/**/*",
+      "!storage/**/*",
+      "!bin/**/*",
+      "!selenium-cache/**/*",
+      "!selenium-extensions/**/*",
+      "!selenium-snapshot/**/*",
+      "!config/secret.js",
+      "!**/*.csv",
+      "!**/*.private.txt",
+      "!./*.txt",
+      "!./*.json",
+      "!./*.csv"
+    ],
+    "extraFiles": [
+      {
+        "from": "cloudscraper/${os}",
+        "to": "Resources/bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": "portable",
+      "icon": "build/icon.ico"
+    }
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@moebius/tonweb-mnemonic": "^0.2.0",
+    "@types/selenium-webdriver": "^4.1.27",
+    "electron": "^32.2.0",
+    "electron-builder": "^24.13.3",
+    "fzstd": "^0.1.1",
+    "jshint": "^2.13.6",
+    "jslint": "^0.12.1",
+    "patch-package": "^8.0.0"
+  },
+  "dependencies": {
+    "@cetusprotocol/cetus-sui-clmm-sdk": "^4.2.0",
+    "@cosmjs/cosmwasm-stargate": "^0.32.3",
+    "@mysten/sui.js": "^0.54.1",
+    "@noble/ed25519": "^1.7.1",
+    "@okxweb3/coin-ethereum": "^1.0.9",
+    "@okxweb3/coin-near": "^1.0.2",
+    "@okxweb3/coin-sui": "^1.0.3",
+    "@okxweb3/coin-ton": "^1.0.0-beta.0",
+    "@orbs-network/ton-access": "^2.3.3",
+    "@sei-js/cosmjs": "^1.0.7",
+    "@ton/core": "^0.58.1",
+    "@ton/crypto": "^3.2.0",
+    "@ton/ton": "^15.0.0",
+    "axios": "^1.7.7",
+    "bip39": "^3.1.0",
+    "bootstrap": "4.3.1",
+    "buffer": "^6.0.3",
+    "chain-registry": "^1.61.8",
+    "console-log-colors": "^0.5.0",
+    "cosmjs-utils": "^0.1.0",
+    "crypto-js": "^4.2.0",
+    "extract-zip": "^2.0.1",
+    "font-awesome": "4.7.0",
+    "https-proxy-agent": "^7.0.4",
+    "jquery": "3.4.1",
+    "luxon": "^3.4.4",
+    "md5": "^2.3.0",
+    "moment": "^2.30.1",
+    "near-api-js": "^4.0.1",
+    "node-cache": "^5.1.2",
+    "node-downloader-helper": "^2.1.9",
+    "node-fetch": "^3.3.2",
+    "node-localstorage": "^3.0.5",
+    "proxy-chain": "^2.5.5",
+    "request": "^2.88.2",
+    "selenium-webdriver": "^4.27.0",
+    "semaphore": "^1.1.0",
+    "tonweb": "^0.0.66",
+    "tough-cookie": "^4.1.4",
+    "tweetnacl": "^1.0.3",
+    "uuid": "^10.0.0",
+    "web3": "^4.9.0"
+  }
+}

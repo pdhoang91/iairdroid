@@ -1,0 +1,30 @@
+{
+    "manifest_version": 2,
+    "name": "Viva & Fish Bypass Bot V0.0.1",
+    "version": "0.0.1",
+    "description": "Viva & Fish Bypass Bot V0.0.1",
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "permissions": [
+      "*://*.hamsterkombat.io/*",
+      "*://*.cex.io/*"
+    ],
+    "browser_action": {
+      "default_icon": {
+        "16": "logo.jpg",
+        "48": "logo.jpg",
+        "128": "logo.jpg"
+      }
+    },
+    "icons": {
+      "16": "logo.jpg",
+      "48": "logo.jpg",
+      "128": "logo.jpg"
+    },
+    "content_scripts": [
+      {
+        "matches": ["*://*.bcsocial.net/*"],
+        "js": ["content.js"],
+        "all_frames": true
+      }
+    ]
+  }

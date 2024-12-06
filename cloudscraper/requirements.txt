@@ -1,0 +1,7 @@
+﻿requests
+cloudscraper
+pycryptodome
+Flask
+pyinstaller
+gevent
+flask_compress

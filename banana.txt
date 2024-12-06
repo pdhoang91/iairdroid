@@ -1,0 +1,10 @@
+Init storage at location ./storage
+949933677 Cloudscraper chưa bật
+949933677 Chạy lệnh '/Users/anhoaian/Document/iairdroid/cloudscraper/distribution/mac/cs'
+949933677 Server not online (1)
+949933677 Server not online (2)
+949933677 Server not online (3)
+949933677 Server is online (4)
+>> total usdt=0
+>> total sellable usdt=0 (0/0 accounts)
+>> total withdrawable usdt=0 (0/0 accounts)
