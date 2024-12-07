@@ -4,3 +4,8 @@ node_modules
 .idea/
 iconfig/gradient/*
 dist/*
+storage/*
+selenium-cache/*
+selenium-extensions/*
+bin/*
+bin/
