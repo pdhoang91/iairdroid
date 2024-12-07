@@ -20,3 +20,5 @@ bash update-distribution-mac.sh
 chmod +x distribution/mac/cs
 bash distribution/mac/cs
 distribution/mac/cs
+
+npm run dist
