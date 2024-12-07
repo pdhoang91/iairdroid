@@ -1,3 +1,4 @@
+//src/utils/selenium-chrome.js
 import { Options, ServiceBuilder } from "selenium-webdriver/chrome.js";
 import { Builder } from "selenium-webdriver/index.js";
 import { manual } from "selenium-webdriver/proxy.js";
@@ -80,6 +81,12 @@ async function getDriverOptions(secret, id) {
   options.addArguments("--disable-features=IsolateOrigins");
   options.addArguments("--remote-debugging-pipe");
   options.addArguments("--use-mock-keychain");
+
+  // Tối ưu chrome options
+  options.addArguments('--disable-extensions');
+  options.addArguments('--disable-smooth-scrolling');
+  options.addArguments('--disable-translate');
+  options.setPageLoadStrategy('eager');
 
   options.addArguments(`user-data-dir=${cachePath}`);
   options.addArguments("profile-directory=Default");

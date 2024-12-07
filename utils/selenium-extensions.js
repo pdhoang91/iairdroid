@@ -1,3 +1,4 @@
+//src/utils/selenium-extensions.js
 import request from "request";
 import {
   SELENIUM_EXTENSION_PATH,

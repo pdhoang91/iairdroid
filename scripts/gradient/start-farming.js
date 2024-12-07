@@ -1,3 +1,4 @@
+//scripts/gradient/start-farming.js
 import { closeChrome, renewOnInstanceClosed, runAccount } from "../../utils/gradient-network.js"
 import { sleep } from "../../utils/helper.js"
 import { getAllGradientAddress } from "../../utils/wallet.js"
