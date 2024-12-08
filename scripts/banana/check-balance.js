@@ -12,8 +12,8 @@ import { sleep } from "../../utils/helper.js";
 
 const { exec } = newSemaphore(50);
 const { exec: onChainExec } = newSemaphore(10);
-const ONLY_USDT_ACC = false;
-const ONLY_WITHDRAWABLE = false;
+const ONLY_USDT_ACC = true;
+const ONLY_WITHDRAWABLE = true;
 const INCLUDE_ONCHAIN_MONEY = false;
 const MAX_RETRY = 3;
 const WITHDRAWABLE_AMOUNT = 0.5;

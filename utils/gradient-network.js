@@ -1,4 +1,3 @@
-//utils/gradient-network.js
 // import chromedriver from "chromedriver";
 // import "chromedriver";
 import { By } from "selenium-webdriver/lib/by.js";
@@ -103,7 +102,7 @@ export async function runAccount(
 ) {
   await runTaskChrome(secret, async() => {
     secret.log(`Kiểm tra tài khoản ${secret.username}...`);
-    await switchToOrCreateWindow(secret, "https://app.gradient.network", "https://app.gradient.network");
+    await switchToOrCreateWindow(secret, "https://app.gradient.network/dashboard", "https://app.gradient.network");
     await sleep(3);
     const loggedIn = await isLoggedIn(secret);
     if (!loggedIn) {
@@ -240,10 +239,10 @@ export const openExtensionPage = async (secret, retry = true, throwExceptionIfNo
       .getText()
       .catch(() => null);
     if (supportStatus?.includes?.("Unsupported")) {
-      await closeAllWindowStartWith(secret, [
-        "https://app.gradient.network",
-        `chrome-extension://${GRADIENT_EXTENSION_ID}`,
-      ]);
+      // await closeAllWindowStartWith(secret, [
+      //   "https://app.gradient.network",
+      //   `chrome-extension://${GRADIENT_EXTENSION_ID}`,
+      // ]);
       throw new Error("Unsupported proxy");
     }
     return supportStatus;

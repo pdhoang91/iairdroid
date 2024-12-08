@@ -1,4 +1,3 @@
-//scripts/gradient/format-config-file.js
 import { generateUniqueId } from "../../utils/gradient-network.js";
 import { writeFile } from "../../utils/loader.js";
 import { getAllGradientAddress } from "../../utils/wallet.js";

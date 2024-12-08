@@ -1,14 +1,12 @@
-//src/utils/selenium-chrome.js
 import { Options, ServiceBuilder } from "selenium-webdriver/chrome.js";
 import { Builder } from "selenium-webdriver/index.js";
 import { manual } from "selenium-webdriver/proxy.js";
-import { anonymizeProxy } from "proxy-chain";
 import {
   ensureChromeDriver,
   getExtensionFileName,
   getUserCachePath,
 } from "./selenium.js";
-import { newSemaphore, newSemaphoreMap, threadSafeMap } from "./semaphore.js";
+import { newSemaphore, threadSafeMap } from "./semaphore.js";
 import {
   downloadExtension,
   getRegisteredExtensions,
@@ -16,8 +14,9 @@ import {
 import { getSeleniumThreads } from "./os.js";
 import EventEmitter from "node:events";
 import { isDone, setDone, sleep } from "./helper.js";
+import { registerAnonymousProxy, unregisterAnonymousProxy } from "./proxy.js";
 
-const HEADLESS_MODE = true;
+const HEADLESS_MODE = false;
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36";
 const ALLOW_DEBUG = false;
@@ -26,8 +25,7 @@ const eventSource = new EventEmitter();
 eventSource.setMaxListeners(0);
 const threadCount = getSeleniumThreads();
 const { exec } = newSemaphore(threadCount);
-const { execBy } = newSemaphoreMap();
-const { getOrSetIfEmpty, deleteVal } = threadSafeMap(execBy);
+const { getOrSetIfEmpty, deleteVal } = threadSafeMap();
 async function getDriverOptions(secret, id) {
   const options = new Options();
 
@@ -82,12 +80,6 @@ async function getDriverOptions(secret, id) {
   options.addArguments("--remote-debugging-pipe");
   options.addArguments("--use-mock-keychain");
 
-  // Tối ưu chrome options
-  options.addArguments('--disable-extensions');
-  options.addArguments('--disable-smooth-scrolling');
-  options.addArguments('--disable-translate');
-  options.setPageLoadStrategy('eager');
-
   options.addArguments(`user-data-dir=${cachePath}`);
   options.addArguments("profile-directory=Default");
   options.setUserPreferences({
@@ -121,7 +113,7 @@ async function getDriverOptions(secret, id) {
     const { user, passsword, ip, port } = secret.proxy;
     const proxyStr = `http://${user}:${passsword}@${ip}:${port}`;
     // secret.log(proxyStr)
-    const newProxyUrl = await anonymizeProxy(proxyStr);
+    const newProxyUrl = await registerAnonymousProxy(secret, false);
     // const newProxyUrl = proxyStr;
     // secret.log(`URL proxy mới: ${newProxyUrl}`)
 
@@ -187,7 +179,6 @@ export async function runTask(secret, id, task = async () => {}) {
             secret.log("Callback is invalid, don't close chrome instance");
             return
           }
-          secret.log(`Close chrome instance ${id}`);
           await deleteInstance(secret, id);
         }, CHROME_INSTANCE_EXPIRE_TIME);
       }
@@ -205,11 +196,18 @@ export async function onInstanceDeleted(id, callback = async (id) => {}) {
 export async function deleteInstance(secret, id, fireEventAfterSeconds = 3) {
   await exec(() =>
     deleteVal(id, async (driver) => {
-      await driver.quit();
-      await sleep(fireEventAfterSeconds);
-      const listenerCount = eventSource.listeners(eventDeletedEventKey(id)).length;
-      secret.log(`Found ${listenerCount} listeners, fire deleted event`);
-      eventSource.emit(eventDeletedEventKey(id), id);
+      secret.log(`Close chrome instance ${id}`);
+      try {
+        await driver.close();
+        await driver.quit();
+        await unregisterAnonymousProxy(secret, false);
+        await sleep(fireEventAfterSeconds);
+        const listenerCount = eventSource.listeners(eventDeletedEventKey(id)).length;
+        secret.log(`Found ${listenerCount} listeners, fire deleted event`);
+        eventSource.emit(eventDeletedEventKey(id), id);
+      } catch(e) {
+        throw new Error(`error when delete instance ${id}: ${e?.message}`);
+      }
     })
   );
 }

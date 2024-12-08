@@ -64,4 +64,3 @@ curl 'https://www.aeropres.in/chromeapi/dawn/v1/profile/update?appid=67492e61ac3
   -H 'sec-fetch-site: cross-site' \
   -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \
   --data-raw '{"telegramid":"telegramid"}'
-  

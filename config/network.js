@@ -1,4 +1,3 @@
-//config/network.js
 import { SuiClient, getFullnodeUrl } from "@mysten/sui.js/client";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { chains } from "chain-registry";

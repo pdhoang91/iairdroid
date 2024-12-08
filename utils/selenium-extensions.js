@@ -1,4 +1,3 @@
-//src/utils/selenium-extensions.js
 import request from "request";
 import {
   SELENIUM_EXTENSION_PATH,
@@ -33,7 +32,7 @@ export const registerExtension = (secret, id, type) => {
       console.log(`Extension ${type} is not supported`);
       return
   }
-  secret.log(`Register extension ${type} for chrome instance ${id}`);
+  // secret.log(`Register extension ${type} for chrome instance ${id}`);
 }
 
 export const downloadExtension = (secret, extensionId, userAgent) =>
