@@ -16,7 +16,7 @@ import EventEmitter from "node:events";
 import { isDone, setDone, sleep } from "./helper.js";
 import { registerAnonymousProxy, unregisterAnonymousProxy } from "./proxy.js";
 
-const HEADLESS_MODE = false;
+const HEADLESS_MODE = true;
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36";
 const ALLOW_DEBUG = false;
@@ -137,15 +137,22 @@ export async function runTask(secret, id, task = async () => {}) {
     getOrSetIfEmpty(
       id,
       async () => {
-        secret.log(`Tạo chrome instance với id ${id}`);
+        secret.log(`Creating Chrome instance with ID ${id}`);
         const options = await getDriverOptions(secret, id);
-        await Promise.all(
-          getRegisteredExtensions(id).map(async (extensionId) => {
-            const extensionFilename = getExtensionFileName(extensionId);
-            await downloadExtension(secret, extensionId, USER_AGENT);
-            options.addExtensions([extensionFilename]);
-          })
-        );
+
+        // Extension setup with error handling
+        try {
+          await Promise.all(
+            getRegisteredExtensions(id).map(async (extensionId) => {
+              const extensionFilename = getExtensionFileName(extensionId);
+              await downloadExtension(secret, extensionId, USER_AGENT);
+              options.addExtensions([extensionFilename]);
+            })
+          );
+        } catch (error) {
+          secret.error(`Extension setup error for ${id}: ${error?.message}`);
+          // Continue without extensions if there's an error
+        }
 
         if (ALLOW_DEBUG) {
           options.addArguments("--enable-logging");
@@ -156,30 +163,47 @@ export async function runTask(secret, id, task = async () => {}) {
           await ensureChromeDriver(secret);
         const serviceBuilder = new ServiceBuilder(chromedriverPath);
         options.setBinaryPath(chromePath);
-        // secret.log(
-        //   `Create headless browser with chromedriver path ${chromedriverPath} and chrome path ${chromePath}`
-        // );
-        const driver = new Builder()
-          .forBrowser("chrome")
-          .setChromeService(serviceBuilder)
-          .setChromeOptions(options)
-          .build();
-        return driver;
+
+        try {
+          const driver = await new Builder()
+            .forBrowser("chrome")
+            .setChromeService(serviceBuilder)
+            .setChromeOptions(options)
+            .build();
+
+          // Set up automatic cleanup
+          process.on('SIGINT', async () => {
+            try {
+              await deleteInstance(secret, id);
+            } catch {}
+          });
+
+          return driver;
+        } catch (error) {
+          secret.error(`Driver creation error for ${id}: ${error?.message}`);
+          throw error;
+        }
       },
       task,
       () => {
         secret.log(
-          `Chrome instance created, close after ${(
+          `Chrome instance created, will close after ${(
             CHROME_INSTANCE_EXPIRE_TIME / 60_000
           ).toFixed(1)} minutes`
         );
+        
         setDone(seleniumIsInstanceAliveKey(id), CHROME_INSTANCE_EXPIRE_TIME);
+        
         setTimeout(async () => {
-          if (isDone(seleniumIsInstanceAliveKey(id))) {
-            secret.log("Callback is invalid, don't close chrome instance");
-            return
+          try {
+            if (isDone(seleniumIsInstanceAliveKey(id))) {
+              secret.log("Callback is invalid, skipping instance closure");
+              return;
+            }
+            await deleteInstance(secret, id);
+          } catch (error) {
+            secret.error(`Auto-cleanup error for ${id}: ${error?.message}`);
           }
-          await deleteInstance(secret, id);
         }, CHROME_INSTANCE_EXPIRE_TIME);
       }
     )
@@ -196,17 +220,37 @@ export async function onInstanceDeleted(id, callback = async (id) => {}) {
 export async function deleteInstance(secret, id, fireEventAfterSeconds = 3) {
   await exec(() =>
     deleteVal(id, async (driver) => {
-      secret.log(`Close chrome instance ${id}`);
+      secret.log(`Closing chrome instance ${id}`);
+      
       try {
-        await driver.close();
+        // Only use quit() as it handles all cleanup
         await driver.quit();
-        await unregisterAnonymousProxy(secret, false);
+        
+        // Cleanup proxy
+        try {
+          await unregisterAnonymousProxy(secret, false);
+        } catch (proxyError) {
+          secret.error(`Proxy cleanup error for ${id}: ${proxyError?.message}`);
+          // Continue execution even if proxy cleanup fails
+        }
+
+        // Fire event after cleanup
         await sleep(fireEventAfterSeconds);
         const listenerCount = eventSource.listeners(eventDeletedEventKey(id)).length;
-        secret.log(`Found ${listenerCount} listeners, fire deleted event`);
+        secret.log(`Found ${listenerCount} listeners, firing deleted event`);
         eventSource.emit(eventDeletedEventKey(id), id);
-      } catch(e) {
-        throw new Error(`error when delete instance ${id}: ${e?.message}`);
+
+      } catch (error) {
+        // Log error but don't throw
+        secret.error(`Error during instance ${id} cleanup: ${error?.message}`);
+        
+        // Ensure event is still fired even if cleanup fails
+        try {
+          await unregisterAnonymousProxy(secret, false);
+        } catch {} // Ignore proxy cleanup errors in error handler
+        
+        await sleep(fireEventAfterSeconds);
+        eventSource.emit(eventDeletedEventKey(id), id);
       }
     })
   );
