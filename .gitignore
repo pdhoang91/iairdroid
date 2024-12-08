@@ -9,3 +9,5 @@ selenium-cache/*
 selenium-extensions/*
 bin/*
 bin/
+config/secret-gradient.private.csv
+config/*
